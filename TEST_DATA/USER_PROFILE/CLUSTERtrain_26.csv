@@ -1,0 +1,2 @@
+TimeStamp,User ID,Date Of Birth,city,country,Loyalty Card,Payment Card,PRM Type,Preferred means of transportation,Preferred carrier,Class,Seat,Refund Type
+2021-05-01 01:12:58.508448,CLUSTERtrain_26,1983-10-25,Nice,France,"['Cartafreccia', 'Golden Card', 'FlyingBlue']",[],"['Wheelchair users in specific seat named h-seat', 'Persons porting a carrycots', 'Pregnant woman']","['Tram', 'Urban', 'Train', 'Toll', 'Ship', 'Park', 'Trolely Bus']","[2.5, 1.0, 2.5, 0.5, 1.5, 3.5, 3.5, 3.5, 0.5, 2.0]",Economy,Large,Automatic refund

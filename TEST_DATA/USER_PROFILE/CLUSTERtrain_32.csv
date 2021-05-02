@@ -1,0 +1,2 @@
+TimeStamp,User ID,Date Of Birth,city,country,Loyalty Card,Payment Card,PRM Type,Preferred means of transportation,Preferred carrier,Class,Seat,Refund Type
+2021-05-01 01:12:58.522973,CLUSTERtrain_32,1922-02-18,Crok,Ireland,[],"['Visa', 'Google Wallet', 'Paypal', 'Apple Wallet', 'Mastercard']",['Persons porting a carrycots'],"['Metro', 'Toll', 'Tram', 'Trolely Bus', 'Other', 'Funicular', 'Urban']","[4.0, 2.5, 5.0, 1.5, 3.5, 0.0, 3.0, 0.0, 2.0, 2.5]",Business,Window,Automatic refund

@@ -1,0 +1,2 @@
+TimeStamp,User ID,Date Of Birth,city,country,Loyalty Card,Payment Card,PRM Type,Preferred means of transportation,Preferred carrier,Class,Seat,Refund Type
+2021-05-01 01:12:58.472507,CLUSTERtrain_14,2014-09-22,Madrid,Spain,"['Golden Card', 'FlyingBlue', 'Grand Voyageur', 'Cartafreccia']",[],['Person with deafness or auditory impairments'],"['Toll', 'Metro', 'Train', 'Urban', 'Taxi', 'Cable Way', 'Coach', 'Park', 'Intercity', 'Ship']","[3.0, 4.5, 0.5, 5.0, 5.0, 2.0, 1.0, 0.0, 0.0, 3.5]",Business,Large,Manual refund

@@ -1,0 +1,2 @@
+TimeStamp,User ID,Date Of Birth,city,country,Loyalty Card,Payment Card,PRM Type,Preferred means of transportation,Preferred carrier,Class,Seat,Refund Type
+2021-05-01 01:12:58.518020,CLUSTERtrain_30,1925-01-15,Bruxelle,Belgium,[],"['Google Wallet', 'Visa']",[],['Funicular'],"[3.0, 0.0, 1.0, 1.0, 4.5, 2.0, 1.5, 4.5, 1.0, 1.5]",Business,Window,Manual refund

@@ -1,0 +1,2 @@
+TimeStamp,User ID,Date Of Birth,city,country,Loyalty Card,Payment Card,PRM Type,Preferred means of transportation,Preferred carrier,Class,Seat,Refund Type
+2021-05-01 01:12:58.513376,CLUSTERtrain_28,2011-05-16,London,UK,"['Golden Card', 'Cartafreccia']","['Apple Wallet', 'Visa', 'Paypal']",[],"['Funicular', 'Taxi', 'Tram', 'Metro', 'Park']","[5.0, 3.0, 5.0, 1.0, 4.5, 5.0, 4.0, 3.5, 4.5, 0.0]",Economy,Window,Manual refund

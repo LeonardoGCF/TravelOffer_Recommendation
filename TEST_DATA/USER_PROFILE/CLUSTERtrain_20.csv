@@ -1,0 +1,2 @@
+TimeStamp,User ID,Date Of Birth,city,country,Loyalty Card,Payment Card,PRM Type,Preferred means of transportation,Preferred carrier,Class,Seat,Refund Type
+2021-05-01 01:12:58.488155,CLUSTERtrain_20,2010-07-21,Frankfurt,Germany,"['Cartafreccia', 'FlyingBlue', 'Grand Voyageur', 'Golden Card']","['Google Wallet', 'Visa', 'Mastercard', 'Paypal', 'Apple Wallet']",[],['Other'],"[3.0, 0.5, 0.0, 0.0, 0.0, 3.5, 3.0, 0.5, 2.5, 3.0]",Business,Window,Automatic refund

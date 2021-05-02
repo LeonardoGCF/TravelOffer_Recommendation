@@ -1,0 +1,2 @@
+TimeStamp,User ID,Date Of Birth,city,country,Loyalty Card,Payment Card,PRM Type,Preferred means of transportation,Preferred carrier,Class,Seat,Refund Type
+2021-05-01 01:12:58.474914,CLUSTERtrain_15,2019-08-29,Dublin,Ireland,"['Cartafreccia', 'FlyingBlue', 'Golden Card']",[],[],"['Tram', 'Taxi', 'Park', 'Urban', 'Funicular', 'Coach', 'Car Sharing', 'Cable Way', 'Train', 'Trolely Bus']","[0.5, 2.0, 3.5, 4.0, 3.0, 2.0, 1.0, 3.0, 5.0, 0.0]",Economy,Window,Manual refund

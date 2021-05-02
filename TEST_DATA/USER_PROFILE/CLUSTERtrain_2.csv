@@ -1,0 +1,2 @@
+TimeStamp,User ID,Date Of Birth,city,country,Loyalty Card,Payment Card,PRM Type,Preferred means of transportation,Preferred carrier,Class,Seat,Refund Type
+2021-05-01 01:12:58.442806,CLUSTERtrain_2,1933-03-29,Madrid,Spain,"['Cartafreccia', 'FlyingBlue', 'Grand Voyageur']","['Apple Wallet', 'Google Wallet', 'Paypal', 'Visa']",['Persons with blind or visual impairments'],"['Train', 'Metro', 'Bike Sharing', 'Intercity', 'Coach', 'Bus', 'Airline', 'Other']","[0.5, 2.5, 0.0, 0.0, 2.5, 1.5, 1.5, 5.0, 3.0, 2.5]",Economy,Window,Manual refund

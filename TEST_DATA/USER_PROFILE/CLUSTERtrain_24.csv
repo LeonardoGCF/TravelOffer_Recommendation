@@ -1,0 +1,2 @@
+TimeStamp,User ID,Date Of Birth,city,country,Loyalty Card,Payment Card,PRM Type,Preferred means of transportation,Preferred carrier,Class,Seat,Refund Type
+2021-05-01 01:12:58.501576,CLUSTERtrain_24,1999-06-23,Paris,France,['Grand Voyageur'],"['Google Wallet', 'Mastercard', 'Paypal']",['Wheelchair users in mainstreaming seat'],"['Funicular', 'Metro']","[1.5, 0.5, 4.5, 1.0, 4.0, 3.0, 0.0, 3.0, 3.0, 0.5]",Business,Window,Automatic refund

@@ -1,0 +1,2 @@
+TimeStamp,User ID,Date Of Birth,city,country,Loyalty Card,Payment Card,PRM Type,Preferred means of transportation,Preferred carrier,Class,Seat,Refund Type
+2021-05-01 01:12:58.495745,CLUSTERtrain_22,1974-01-02,Madrid,Spain,"['Golden Card', 'FlyingBlue']","['Paypal', 'Visa', 'Google Wallet', 'Mastercard', 'Apple Wallet']",[],"['Metro', 'Coach', 'Cable Way', 'Park', 'Toll', 'Tram', 'Taxi', 'Bike Sharing', 'Bus', 'Urban', 'Train']","[1.5, 3.5, 1.0, 0.5, 3.5, 5.0, 1.5, 5.0, 0.0, 1.0]",Business,Window,Automatic refund
