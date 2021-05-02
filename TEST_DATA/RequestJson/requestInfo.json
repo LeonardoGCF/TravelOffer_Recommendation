@@ -1,0 +1,15 @@
+{
+    "Profile": "Business",
+    "Starting point": "Dublin",
+    "Destination": "Milan",
+    "Departure time": "2022-10-20 21:49",
+    "Arrival time": "2022-11-02 08:53",
+    "Services": [
+        "Local type",
+        "Water transport",
+        "Telecabin"
+    ],
+    "Walking speed": "Slow",
+    "Cycling speed": "Fast",
+    "Driving speed": "Fast"
+}
