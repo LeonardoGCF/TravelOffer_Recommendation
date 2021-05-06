@@ -92,7 +92,7 @@ class TravelOffer_RS:
             if clusterExist == True:
                 self.cold_ranker.API_ColdUserRensponse(username, response_code)
             else:
-                self.API_USER_TRAIN(username,df_profile,reClusterTag=False)
+                self.API_USER_TRAIN(username,df_profile,reClusterTag=True)
                 self.ranker.API_CLASSIFIER_Response(username, response_code)
             
         if userTag == 'cold_user' or userTag =='old_user':
