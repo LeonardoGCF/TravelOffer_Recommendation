@@ -690,7 +690,10 @@ class FEEDBACK:
         df_rec = pd.read_csv(tablename)
         df_rec = df_rec.head(displayNum)
         del(df_rec['Score'])
-        BoughtTag = [0]*displayNum
+        if len(df_rec) < displayNum:
+            BoughtTag = [0]*len(df_rec)
+        else:
+            BoughtTag = [0]*displayNum
         df_rec['Bought Tag'] = BoughtTag
 
         boughtID_list = boughtInfo['Travel Offer ID'].values.tolist()
@@ -704,9 +707,18 @@ class FEEDBACK:
         boughtInfo['Bought Tag'] = [1]*len(boughtInfo)
         df_res = pd.concat([df_rec,boughtInfo])
         df_res = df_res.reset_index(drop=True)
+        cols=['Travel Offer ID','User ID','TimeStamp','Date Of Birth','city','country','Loyalty Card',
+              'Payment Card','PRM Type','Preferred means of transportation','Preferred carrier',
+              'Class','Seat','Refund Type','Quick','Reliable','Cheap','Comfortable','Door-to-door',
+              'Environmentally friendly','Short','Multitasking','Social','Panoramic','Healthy',
+              'Legs Number','Profile','Starting point','Destination','Via','LegMode','LegCarrier',
+              'LegSeat','LegLength','Departure time','Arrival time','Services','Transfers','Transfer duration',
+              'Walking distance to stop','Walking speed','Cycling distance to stop','Cycling speed',
+              'Driving speed','Bought Tag']
+        df_res = df_res.ix[:,cols]
         print('After Buying, the following historical records will be recorded:\n',df_res)
 
-        df_res.to_csv(self.his.TEST_HISTORICAL_DATA_PATH + '/'+username+'.csv',mode='a',header=False)
+        df_res.to_csv(self.his.TEST_HISTORICAL_DATA_PATH + '/'+username+'.csv',mode='a',header=False,index=False)
         # self.dataP.renew_database(df_res, username)
 
     def get_boughtInfo(self,username,boughtList,response_code):
