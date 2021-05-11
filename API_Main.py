@@ -359,14 +359,14 @@ class TravelOffer_RS:
             print('{} not in the help list, use show() to check all the function'.format(help_code))
             
 
-main = TravelOffer_RS()
+# main = TravelOffer_RS()
 
 # main.help()
 # username = 'COLDUSER3'
 # username = 'COLDUSER1'
 # username = 'OLDUSER1'
 # main.API_USER_TRAIN(username,reClusterTag=False)
-main.show()
+# main.show()
 
 
 
