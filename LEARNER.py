@@ -844,6 +844,9 @@ class CLUSTER_LEANER:
                 if filename in os.listdir(self.his.TEST_HISTORICAL_DATA_PATH):
                     df_raw_tmp = pd.read_csv(self.his.TEST_HISTORICAL_DATA_PATH+'/'+filename)
                     df_raw = pd.concat([df_raw,df_raw_tmp],axis=0)
+            if len(df_raw) == 0:
+                print('please check your database, one cluster has no data')
+                return 
             self.his.res2csv(df_raw, self.his.TEST_HISTORICAL_DATA_PATH, tablename)
 
         print('All the historical data for each cluster is ready!') 
