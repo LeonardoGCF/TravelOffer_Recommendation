@@ -99,6 +99,9 @@ class TravelOffer_RS:
             if modelExist == False:
                 self.API_USER_TRAIN(username,df_profile,reClusterTag=False)
             self.ranker.API_CLASSIFIER_Response(username, response_code)
+            
+        print('The response_code for this time is ',response_code)
+        return response_code
 
     def API_USER_FEEDBACK(self,username,boughtID_list,response_code):
         boughtInfo = self.fdb.get_boughtInfo(username, boughtID_list, response_code)
