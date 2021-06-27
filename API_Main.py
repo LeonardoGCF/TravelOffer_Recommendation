@@ -32,20 +32,32 @@ class TravelOffer_RS:
     #EXAMPLE PARAMETER
     OLD_USER = 'OLDUSER1'
     COLD_USER = 'COLDUSER1'
+    # req =  {
+    #             #    "Legs Number":8,
+    #                "Profile":'Business',
+    #                "Starting point":'Dublin',
+    #                "Destination":"Milan",
+    #                "Departure time":'2022-10-20 21:49',
+    #                "Arrival time":'2022-11-02 08:53',
+    #             #    "Via":['Lisbon', 'Berlin', 'Kraków', 'Praha', 'Oxford', 'Madrid', 'Frankfurt'],
+    #                "Services":['Local type', 'Water transport', 'Telecabin'],
+    #             #    "Transfers":"Max 3",
+    #             #    "Transfer duration":'At least 30 min',
+    #             #    "Walking distance to stop":'200m',
+    #                "Walking speed":'Slow',
+    #             #    "Cycling distance to stop":'1800m',
+    #                "Cycling speed":'Fast',
+    #                "Driving speed":'Fast'
+    # }
     req =  {
-                #    "Legs Number":8,
                    "Profile":'Business',
-                   "Starting point":'Dublin',
-                   "Destination":"Milan",
-                   "Departure time":'2022-10-20 21:49',
-                   "Arrival time":'2022-11-02 08:53',
-                #    "Via":['Lisbon', 'Berlin', 'Kraków', 'Praha', 'Oxford', 'Madrid', 'Frankfurt'],
-                   "Services":['Local type', 'Water transport', 'Telecabin'],
-                #    "Transfers":"Max 3",
-                #    "Transfer duration":'At least 30 min',
-                #    "Walking distance to stop":'200m',
+                   "Starting point":'Milan',
+                   "Destination":"Dublin",
+                   "Departure time":'2021-06-13 21:49',
+                   "Arrival time":'2021-06-15 08:53',
+                   "Via":['Berlin', 'Frankfurt'],
+                   "Services":['Local type', 'Telecabin'],
                    "Walking speed":'Slow',
-                #    "Cycling distance to stop":'1800m',
                    "Cycling speed":'Fast',
                    "Driving speed":'Fast'
     }
@@ -109,6 +121,11 @@ class TravelOffer_RS:
 
 
     def CHECK_Req2TSP(self,req=None,Jsonfile=None):
+        if req is None:
+            if Jsonfile is None:
+                req = self.req
+            else:
+                req = self.tsp.readJsonfile(Jsonfile)
         self.tsp.CHECK_USER2TSP(req,Jsonfile)
 
     def CHECK_Req2Categorizer(self, response_code=999,req=None,Jsonfile=None):
@@ -362,7 +379,20 @@ class TravelOffer_RS:
             print('{} not in the help list, use show() to check all the function'.format(help_code))
             
 
+    def CreateOldUser(self,username,df_profile=None):
+        if df_profile is None: 
+            df_profile=self.df_profile
+            df_profile.loc[0,'User ID'] = username
+        self.gt_u._updateUserCurrProfile(username,mode='manual',df_profile=df_profile) 
+
+        staProfile = {"Date Of Birth":df_profile['Date Of Birth'][0],"city":df_profile['city'][0],"country":df_profile['country'][0]}
+        self.his._GenerateHis2File(username,staticChangeTag=False,staProfile=staProfile)
+
+        
+        
+
 # main = TravelOffer_RS()
+# main.CHECK_Req2TSP()
 
 # main.help()
 # username = 'COLDUSER3'
@@ -370,6 +400,7 @@ class TravelOffer_RS:
 # username = 'OLDUSER1'
 # main.API_USER_TRAIN(username,reClusterTag=False)
 # main.show()
+# main.API_USER_PREDICT(main.OLD_USER,main.req)
 
 
 
