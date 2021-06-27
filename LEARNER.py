@@ -23,6 +23,7 @@ class TEST_HistoricalDataGenerate:
     TEST_RESULT_PATH = os.path.abspath(os.path.join(TEST_DATA_PATH,'RECOMMENDATION_RESULTS'))
     CHECK_USER2TSP_PATH = os.path.abspath(os.path.join(TEST_DATA_PATH,'CHECK_Metadata'))
     TEST_USER_PROFILE = os.path.abspath(os.path.join(TEST_DATA_PATH,'USER_PROFILE'))
+    EVAL_ACC_RESULT_PATH =os.path.abspath(os.path.join(TEST_DATA_PATH,'EVAL_ACC_RESULT'))
 
     CLUSTER_FOLDER_PATH =os.path.abspath(os.path.join(TEST_DATA_PATH,'CLUSTER_FOLDER'))
     CM_FOLDER_PATH = os.path.abspath(os.path.join( CLUSTER_FOLDER_PATH,'CLUSTER_MODEL_INFO'))
@@ -117,6 +118,35 @@ class TEST_HistoricalDataGenerate:
 
         self.Leg_Seats = ["Aisle","Window","Large"]
 
+
+    def offer_Categorizer(self):
+        self.dataRange_OfferCategory()
+        OfferScore = {}
+
+        for i in self.Categories :
+         score = random.uniform(0,1)
+         OfferScore.update({i:round(score,4)})
+
+        return OfferScore
+
+    def leg_info_Generator(self,legs_num):
+        self.dataRang_LegInfo()
+        leg_mode = []
+        leg_carrier = []
+        leg_seat = []
+        leg_length = []
+
+        for inx in range(legs_num):
+            leg_mode.append(random.choice(self.Leg_Modes))
+            leg_carrier.append(random.choice(self.Leg_Carriers)) 
+            leg_seat.append(random.choice(self.Leg_Seats))
+            leg_length.append(random.randint(10,100))
+
+        leg_tmp = {"LegMode":str(leg_mode),"LegCarrier":str(leg_carrier),"LegSeat":str(leg_seat),"LegLength":str(leg_length)}
+        
+        return leg_tmp
+
+    #--------RANDOM--------------------
     def staticProfile_Generator(self):
         self.dataRange_StaticProfile()
         #personal Information-date of birth
@@ -296,40 +326,17 @@ class TEST_HistoricalDataGenerate:
         # print(TP_dict)
         return OfferContext_dict
 
-    def offer_Categorizer(self):
-        self.dataRange_OfferCategory()
-        OfferScore = {}
-
-        for i in self.Categories :
-         score = random.uniform(0,1)
-         OfferScore.update({i:round(score,4)})
-
-        return OfferScore
-
-    def leg_info_Generator(self,legs_num):
-        self.dataRang_LegInfo()
-        leg_mode = []
-        leg_carrier = []
-        leg_seat = []
-        leg_length = []
-
-        for inx in range(legs_num):
-            leg_mode.append(random.choice(self.Leg_Modes))
-            leg_carrier.append(random.choice(self.Leg_Carriers)) 
-            leg_seat.append(random.choice(self.Leg_Seats))
-            leg_length.append(random.randint(10,100))
-
-        leg_tmp = {"LegMode":str(leg_mode),"LegCarrier":str(leg_carrier),"LegSeat":str(leg_seat),"LegLength":str(leg_length)}
-        
-        return leg_tmp
-
-    def historical_Generator(self,username):
+    def historical_Generator(self,username,staticChangeTag=True,staProfile=None):
 
         dataframe_lists = []
         unique_id = datetime.datetime.now().strftime('%Y%m%d%H%M%S')      
         
         userID = username
-        staticProfile = self.staticProfile_Generator()
+        if staticChangeTag is True:
+            staticProfile = self.staticProfile_Generator()
+        else:
+            staticProfile = staProfile
+            if staProfile is None:return
         dynamicProfile = self.dynamicProfile_Generator()
 
         TimeStamp = datetime.datetime.now()
@@ -338,7 +345,7 @@ class TEST_HistoricalDataGenerate:
         TravelOffer.update({"User ID":userID })
         TravelOffer.update(staticProfile)
             
-
+        #change the number to generate different amount of his records
         dynamic_num =random.randint(4,7)
         for inx_d in range(dynamic_num):
             TravelOffer.update(dynamicProfile)
@@ -433,14 +440,1083 @@ class TEST_HistoricalDataGenerate:
         
         return df
 
+    #++++++++++RULE RANDOM++++++++++++++++
+    def rule_random_index(self,proba):
+        start = 0
+        index = 0
+        randnum = random.randint(1, sum(proba))
+        for index, scope in enumerate(proba):
+            start += scope
+            if randnum <= start:
+                break
+        return index
+
+    #+++++++++++++++++++++++++++++++
+    def RULE_staticProfile_Generator(self):
+        self.dataRange_StaticProfile()
+
+        #personal Information-date of birth
+        # arr = ['[10,18)', '[18,30)', '[30,40)','[40,60)','[60,80]'] 
+        proba = [10,30,20,30,10]
+        index = self.rule_random_index(proba)
+        if index == 0:
+            #age = random.randint(10,17)
+            start_birth =(2003,1,1,0,0,0,10,10,10)#18
+            end_birth = (2011,12,31,23,59,59,10,10,10)#10
+            start = time.mktime(start_birth)
+            end =time.mktime(end_birth)
+            s =random.randint(start,end)
+
+        elif index == 1:
+            #age = random.randint(18,29)
+            start_birth =(1991,1,1,0,0,0,10,10,10)#30
+            end_birth = (2002,12,31,23,59,59,10,10,9)#18
+            start = time.mktime(start_birth)
+            end =time.mktime(end_birth)
+            s =random.randint(start,end)
+
+        elif index == 2: 
+            #age = random.randint(30,39)
+            start_birth =(1981,1,1,0,0,0,10,10,10)#40
+            end_birth = (1990,12,31,23,59,59,10,10,9)#30
+            start = time.mktime(start_birth)
+            end =time.mktime(end_birth)
+            s =random.randint(start,end)
+
+        elif index == 3:
+            #age = random.randint(40,59)
+            start_birth =(1961,1,1,0,0,0,10,10,10)#60
+            end_birth = (1980,12,31,23,59,59,10,10,9)#40
+            start = time.mktime(start_birth)
+            end =time.mktime(end_birth)
+            s =random.randint(start,end)
+
+        elif index == 4:
+            #age = random.randint(60,80)
+            start_birth =(1941,1,1,0,0,0,10,10,10)#80
+            end_birth = (1960,12,31,23,59,59,10,10,9)#60
+            start = time.mktime(start_birth)
+            end =time.mktime(end_birth)
+            s =random.randint(start,end)
+
+        date_str = datetime.datetime(1970, 1, 1) + datetime.timedelta(seconds=s)
+        date_of_birth = date_str.strftime("%Y-%m-%d")
+        # print(date_of_birth)
+
+        #-------------------------------------
+        #country
+        country = random.choice(self.countries)
+        # print(country)
+
+        #-------------------------------------
+        #city
+        city_search_name = "self.city_for_"+country
+        city = random.choice(eval(city_search_name))
+
+        static_profile_dict ={"Date Of Birth":date_of_birth,"city":city,"country":country}
+        # print("\nRandom Registration Information has been generated:\n")
+        # print(self.registration_dict)
+        return static_profile_dict
+
+    def RULE_dynamicProfile_Generator(self,staticProfile):
+        self.dataRange_DynamicProfile()
+
+        age = int(datetime.datetime.now().year) - int(staticProfile['Date Of Birth'][:4])
+        country =staticProfile['country']
+        
+        #-------------------------------------
+        #PRM
+        PRM_type =[]
+        #[60,] => Old
+        if age >= 60 :
+            PRM_type.append('Older person')
+
+        #[22,35] => 10% Pregnant
+        if age >= 22 and age <=35 :
+            proba =[10,90]
+            index =self.rule_random_index(proba)
+            if index == 0:
+                PRM_type.append('Pregnant woman')
+
+        #[22,] => 10% carrycots
+        if age >= 22 :
+            proba = [10,90]
+            index =self.rule_random_index(proba)
+            if index == 0 :
+                PRM_type.append("Persons porting a carrycots")
+
+        #5% people need wheelchair, and can have only one type
+        proba = [5,95]
+        index =self.rule_random_index(proba)
+        if index ==0 :
+            wheelchairs =["Persons with impairments in their members / users of temporary wheelchair",
+                         "Wheelchair users in mainstreaming seat",
+                         "Wheelchair users in specific seat named h-seat"]
+            wheelchair = random.choice(wheelchairs)
+            PRM_type.append(wheelchair)
+
+        #4% people blind or deafness or both
+        proba = [4,96] 
+        index =self.rule_random_index(proba)
+        if index == 0:
+            prm = ["Persons with blind or visual impairments",
+                   "Person with deafness or auditory impairments"]
+            num_of_PRM = random.randint(1,2)
+            PRM_type += random.sample(prm,num_of_PRM)
+        # print(PRM_type)
+
+        #------------------------------------
+        #payment cards
+        payment_card = []
+
+        #[,18] =>  No payment cards
+        if age <=18 :
+            payment_card = []
+        else:
+            #[18,40] => 20% apple/ google
+            if age <=40 :
+                proba = [20,95]
+                index = self.rule_random_index(proba)
+                if index ==0 :
+                    num_of_paymentcards = random.randint(1,2)
+                    cards =["Google Wallet","Apple Wallet"]
+                    payment_card += random.sample(cards,num_of_paymentcards)
+
+            
+            #70% => mastercard / visa
+            proba = [70,30]
+            index = self.rule_random_index(proba)
+            if index == 0:
+                num_of_paymentcards = random.randint(1,2)
+                cards =["Mastercard","Visa"]
+                payment_card += random.sample(cards,num_of_paymentcards)    
+
+            #40% =>paypal
+            proba = [40,60]
+            index = self.rule_random_index(proba)
+            if index == 0:
+                payment_card.append('Paypal')
+
+        #---------------------------------------
+        #Preferred Carrier
+        #TODO 
+        preferred_carrier = []
+        for i in range(len(self.carriers)):
+            preferred_carrier.append(random.randint(0,10)/2)
+        # print(preferred_carrier)
+
+        #--------------------------------------
+        #class
+        #Default Value
+        class_type='Economy'
+
+        #TODO purpose
+        #prm => 70% first
+        if not PRM_type == []:
+            proba = [20,10,70]
+        else:
+            #age
+            #[,25] => 70% Economy 25% business 5% first
+            if age <=25:
+                proba = [70,25,5]
+            #[25,] => 60% Economy 30% business 10% first
+            else:
+                proba = [60,30,10]
+
+        index =self.rule_random_index(proba)
+        if index == 0 :
+            class_type ="Economy"
+        if index ==1 :
+            class_type ="Business"
+        if index ==2 :
+            class_type = "First Class" 
+        # print(class_type)
+
+
+        #--------------------------------------
+        #preferred transportation
+        preferred_transportation =[]
+        #TODO leg counts
+        #TODO Starting point & des
+        #TODO preferred carrier
+        #class 
+        #90% first/business man => air/ship/taxi
+        if class_type == "First Class" or class_type == "Business":
+            proba = [90,10]
+            index =self.rule_random_index(proba)
+            if index ==0:
+                trans = ["Airline","Ship","Taxi"]
+                num_of_transportation = random.randint(1,3)
+                preferred_transportation +=random.sample(trans,num_of_transportation)
+        #90% economy man => bus/metro/bike/car sharing/...
+        elif class_type == 'Economy':
+            proba = [90,10]
+            index = self.rule_random_index(proba)
+            if index == 0 :
+                trans = ["Coach","Toll","Car Sharing","Train",
+                       "Urban","Trolely Bus","Tram","Intercity","Metro","Bus","Other",
+                       "Park","Bike Sharing"]
+                    #    ["Coach","Toll","Car Sharing","Train",
+                    #    "Urban","Trolely Bus","Tram","Intercity","Metro",
+                    #    "Cable Way","Funicular","Bus","Other",
+                    #    "Park","Bike Sharing"]
+                num_of_transportation = random.randint(1,13)
+                preferred_transportation +=random.sample(trans,num_of_transportation)  
+
+        #prm
+        prm_limit1 = ["Older person",
+                "Persons with impairments in their members / users of temporary wheelchair",
+                "Persons porting a carrycots",
+                "Wheelchair users in mainstreaming seat",
+                "Wheelchair users in specific seat named h-seat",
+                "Pregnant woman"] 
+
+        prm_limit2 =[
+                "Persons with blind or visual impairments",
+                "Persons porting a carrycots",
+                "Person with deafness or auditory impairments"]
+
+        #30% normal people => cable/funicular
+        if PRM_type == []:
+            proba = [30,70]
+            index =self.rule_random_index(proba)
+            if index ==0:
+                trans = ["Cable Way","Funicular"]
+                num_of_transportation = random.randint(1,2)
+                preferred_transportation +=random.sample(trans,num_of_transportation)  
+        else:
+            for n in range(len(PRM_type)):
+                #wheelchair/pregnant/old => NO cable
+                if PRM_type[n] in prm_limit1:
+                    if 'Cable Way' in preferred_transportation:
+                        preferred_transportation.remove('Cable Way') 
+                    if 'Funicular' in preferred_transportation:
+                        preferred_transportation.remove('Funicular')
+
+                #blind/carrycots/deafness => NO bike
+                elif PRM_type[n] in prm_limit2:
+                    if 'Bike Sharing' in preferred_transportation:
+                        preferred_transportation.remove('Bike Sharing')
+        # print(preferred_transportation)
+
+        #-----------------------------------------------
+        #loyalty card
+        # ["Cartafreccia","FlyingBlue","Golden Card","Grand Voyageur"]
+        loyalty_card=[]
+
+        #preferred carrier
+        # carriers =["Trenitalia","SNFC","AirFrance","VBB","TMB","Renfe","RegioJet","KLM","Iberia","FlixBus"]
+        # Trenitalia,Renfe >=4 => 70% cartafreccia
+        if preferred_carrier[0] >=4 or preferred_carrier[5]>=4 :
+            proba=[70,30]
+            index=self.rule_random_index(proba)
+            if index ==0:
+                loyalty_card.append('Cartafreccia')
+        # AirFrance, RegioJet,KLM,Iberia => 70% FlyingBlue
+        if preferred_carrier[2] >=4 or preferred_carrier[6]>=4 or preferred_carrier[7]>=3.5 or preferred_carrier[8]>=4:
+            proba=[70,30]
+            index=self.rule_random_index(proba)
+            if index ==0:
+                loyalty_card.append('FlyingBlue') 
+
+        #SNFC =>70% Grand Voyageur
+        if preferred_carrier[1]>=3.5:
+            proba=[70,30]
+            index=self.rule_random_index(proba)
+            if index ==0:
+                loyalty_card.append('Grand Voyageur')    
+
+        #preferred transportation
+        #30% airline => flyingBlue / Grand Voyageur
+        if 'Airline' in preferred_transportation:
+            proba=[30,70]
+            index =self.rule_random_index(proba)
+            if index == 0:
+                num_of_cards = random.randint(1,2)
+                loyalty_card += random.sample(['FlyingBlue','Grand Voyageur'],num_of_cards) 
+        #30% train => Cartafreccia
+        if 'Train' in preferred_transportation:
+            proba=[30,70]
+            index =self.rule_random_index(proba)
+            if index == 0:
+                loyalty_card.append('Cartafreccia')
+
+        #country
+        # 50% Italy => Cartafreccia
+        if country =='Italy':
+            proba=[50,50]
+            index =self.rule_random_index(proba)
+            if index == 0:
+                loyalty_card.append('Cartafreccia')     
+        # 50% France => Grand Voyageur
+        if country == 'France':
+            proba=[50,50]
+            index =self.rule_random_index(proba)
+            if index == 0:
+                loyalty_card.append('Grand Voyageur')      
+                
+        
+        # 10% people  => Golden Card
+        proba=[10,90]
+        index =self.rule_random_index(proba)
+        if index == 0:
+            loyalty_card.append('Golden Card')
+
+        #Remove Duplication
+        loyalty_card = list(set(loyalty_card))
+        # print(loyalty_card)
+
+        #---------------------------------------------------
+        #seat
+        #Default Value
+        seat_type = random.choice(self.seats)
+
+        #age
+        #70% young => Window
+        if age <=30 :
+            proba =[70,30]
+            index =self.rule_random_index(proba)
+            if index ==0:
+                seat_type = 'Window' 
+
+        #preferred transportation
+        #60% ship => window
+        if 'Ship' in preferred_transportation:
+            proba =[60,40]
+            index =self.rule_random_index(proba)
+            if index ==0:
+                seat_type = 'Window'  
+
+        #TODO Arrival time -Departure time
+
+        #PRM
+        #disabled people => 85%large/ 10% aisle /5% window
+        if not PRM_type == []:
+            proba =[85,10,5]
+            index =self.rule_random_index(proba)
+            if index ==0:
+                seat_type = 'Large'
+            if index == 1:
+                seat_type = 'Aisle'
+            if index== 2:
+                seat_type ='Window'
+        # print(seat_type)
+
+        #---------------------------------------------------
+        #refund
+        #default value-70% people => automatic way
+        proba =[70,30]
+        index =self.rule_random_index(proba)
+        if index == 0:
+            refund_type = "Automatic refund"
+        if index == 1:
+            refund_type = "Manual refund"
+
+        #age
+        #90% old people => manual refund
+        if age >=60 :
+            proba =[90,10]
+            index=self.rule_random_index(proba)
+            if index ==0:
+                refund_type ="Manual refund"
+        
+        #prm
+        #blind => manual
+        if "Persons with blind or visual impairments" in PRM_type:
+            refund_type = "Manual refund"
+        #deafness => automatic
+        if "Person with deafness or auditory impairments" in PRM_type:
+            refund_type= "Automatic refund"
+        # print(refund_type)
+
+        #-----------------------------------------------------
+        #all
+        dynamic_profile_dict = {"Loyalty Card":str(loyalty_card),
+                           "Payment Card":str(payment_card),
+                           "PRM Type":str(PRM_type),
+                           "Preferred means of transportation":str(preferred_transportation),
+                           "Preferred carrier":str(preferred_carrier),
+                           "Class":class_type,
+                           "Seat":seat_type,
+                           "Refund Type":refund_type}
+
+        # print("\nRandom Preference Information has been generated:\n")
+        # print(self.preference_dict)
+        return dynamic_profile_dict
+  
+    def RULE_offerContext_Generator(self,staticProfile,dynamicProfile):
+        self.dataRange_OfferContext()
+
+        age = int(datetime.datetime.now().year) - int(staticProfile['Date Of Birth'][:4])
+        country =staticProfile['country']
+        city =staticProfile['city']
+        PRM_type =dynamicProfile['PRM Type']
+        class_type =dynamicProfile['Class']
+        preferred_transportation = dynamicProfile['Preferred means of transportation']
+        #--------------------------------------------------
+        #purpose
+        #default value
+        profile_type =random.choice(self.profile_typies)
+
+        #age
+        #children & old people => NO Business
+        if age <=18 or age>=60 :
+            profile_type = random.choice(["Basic","Family","Leisure"])
+        # print(profile_type)
+
+        #-------------------------------------------------
+        #starting point
+        #Default Value
+        start_point = random.choice(self.starting_points)
+
+        #city
+        #40% people => same starting point with city
+        proba =[40,60]
+        index=self.rule_random_index(proba)
+        if index == 0:
+            start_point = city
+        # print(start_point)
+
+        #---------------------------------------------------
+        #destination
+        #Default value
+        destination = random.choice(self.destination_points)
+
+        #10% people => same des with starting point
+        proba =[10,90]
+        index=self.rule_random_index(proba)
+        if index == 0:
+            destination = start_point 
+
+        #TODO prm
+        # print(destination)
+
+        #---------------------------------------------------
+        #Via Stops (des > prm > purpose >age)
+        via_stop=[]
+        via_dict = ["Brugge","Bruxelle","Praha","Krumlov","Paris","Nice",
+                       "Frankfurt","Berlin","Dublin","Crok","Milan","Rome",
+                       "Warsaw","Kraków","Lisbon","Porto","Barcelona","Madrid",
+                       "London","Oxford"]
+        via_dict.remove(start_point)
+        num_of_via = random.randint(0,4)
+
+        #des
+        #same source and des => NO leg
+        if destination == start_point:
+            num_of_via = 0
+
+
+        #prm
+        #95% disabled people =>[0,1] leg 
+        elif not PRM_type == []:
+            proba=[95,5]
+            index=self.rule_random_index(proba)
+            if index == 0:
+                num_of_via= random.randint(0,1)
+
+        #purpose
+        #90% business => no more than 2 legs
+        elif profile_type == 'Business':
+            proba =[90,10]
+            index=self.rule_random_index(proba)
+            if index ==0 :
+                num_of_via = random.randint(0,2)
+        
+        #age
+        # 70% young => [3,5] legs
+        elif age <=35 and age>= 18:
+            proba =[70,30]
+            index=self.rule_random_index(proba)
+            if index ==0:
+                num_of_via =random.randint(3,5)
+
+        if destination  != start_point:
+            via_dict.remove(destination) 
+        via_stop = random.sample(via_dict,num_of_via)
+        legs_num = num_of_via + 1
+
+        #------------------------------------------------
+        #departure_time
+        #TODO his records have only 1/2 offers at same time 
+        
+        #for new offer
+        # start_departure = time.localtime() 
+        #for his
+        #start time later than birthday
+        birthDay =staticProfile['Date Of Birth']
+        start_departure = time.strptime(birthDay,'%Y-%m-%d')
+        # start_departure = (1990,1,1,0,0,0,0,0,0)
+        end_departure =(2022,12,31,0,0,0,0,0,0) 
+        start_dep = time.mktime(start_departure)
+        end_dep =time.mktime(end_departure)
+        sec_dep =random.randint(start_dep,end_dep)
+        date_dep = datetime.datetime(1970, 1, 1) + datetime.timedelta(seconds=sec_dep)
+        departure_time = date_dep.strftime("%Y-%m-%d")
+
+        # class
+        #first/business => 90% more siutable timetable
+        if class_type == 'First Class' or class_type== 'Business':
+            proba = [90,10]
+            index =self.rule_random_index(proba)
+            if index ==0:
+                start_hour = random.randint(10,16)
+            if index ==1:
+                start_hour = random.randint(5,23)
+        else:
+            start_hour =random.randint(5,23)
+        
+        departure_time = departure_time + ' ' + str(start_hour) +':'+str(random.randint(0,59))
+        # print(departure_time)
+
+        #------------------------------------------------
+        #arrival time
+        timeArray = time.strptime(departure_time,"%Y-%m-%d %H:%M")
+        start_arr= int(time.mktime(timeArray))
+        #Default Value
+        end_arr = start_arr + 3600*2
+
+        #des
+        #same city => 90% less than 2 hours 10% no more than 5 hours
+        if destination == start_point:
+            proba=[90,10]
+            index = self.rule_random_index(proba)
+            if index ==0:
+                time_interval = 3600 * 2
+                end_arr = start_arr + time_interval
+            if index==1:
+                time_interval =3600 * 5
+                end_arr = start_arr + time_interval
+
+        else:
+            #via stops
+            via_count = len(via_stop)
+            # leg=0 => 90% no more than 4 hours 10% no more than 1 day
+            if via_count == 0:
+                proba = [90,10]
+                index = self.rule_random_index(proba)
+                if index==0:
+                    time_interval =3600*4
+                    end_arr =start_arr + time_interval
+                if index ==1:
+                    time_interval =3600*24
+                    end_arr =start_arr+time_interval
+                    start_arr = start_arr + 3600*4
+            
+            #legs [1,3] => 60% no more than 2 days(at least 10 hours) 
+            #              40% no more than 4 days(at least 2 days) 
+            elif via_count <= 3:
+                proba = [60,40]
+                index = self.rule_random_index(proba)
+                if index==0:
+                    time_interval =3600*24*2
+                    end_arr =start_arr + time_interval
+                    start_arr =start_arr+ 3600*10
+                if index ==1:
+                    time_interval =3600*24*4
+                    end_arr =start_arr+time_interval
+                    start_arr= start_arr+ 3600*24*2
+            
+            #legs [3,] =>  80% no more than 5 days(at least 2 days) 
+            #              20% no more than 7 days(at least 5 days) 
+            elif via_count > 3 :
+                proba=[80,20]
+                index = self.rule_random_index(proba)
+                if index ==0:
+                    time_interval =3600*24*5
+                    end_arr = start_arr +time_interval
+                    start_arr =start_arr+3600*24*2
+                if index ==1:
+                    time_interval =3600*24*7
+                    end_arr=start_arr+time_interval
+                    start_arr=start_arr+3600*24*5
+
+        sec_arr = random.randint(start_arr,end_arr)
+        date_arr = datetime.datetime(1970,1,1) + datetime.timedelta(seconds=sec_arr)
+        arrival_time = date_arr.strftime("%Y-%m-%d %H:%M") 
+        # print(arrival_time)
+        
+        #------------------------------------------------------
+        #services
+        service =[]
+
+        #preferred transportation
+        #Airline => 70% Air
+        if 'Airline' in preferred_transportation:
+            proba=[70,30]
+            index =self.rule_random_index(proba)
+            if index == 0:
+                service.append('Air')
+        # 
+        if 'Train' in preferred_transportation:
+            proba=[70,30]
+            index =self.rule_random_index(proba)
+            if index == 0:
+                service.append('Highspeed Train')
+        # Coach => 70% coach
+        if 'Coach' in preferred_transportation:
+            proba=[70,30]
+            index =self.rule_random_index(proba)
+            if index == 0:
+                service.append('Coach')
+        #Urban =>70% suburban
+        if 'Urban' in preferred_transportation:
+            proba=[70,30]
+            index =self.rule_random_index(proba)
+            if index == 0:
+                service.append('Suburban')
+        #tram => 70% tram
+        if 'Tram' in preferred_transportation:
+            proba=[70,30]
+            index =self.rule_random_index(proba)
+            if index == 0:
+                service.append('Tram')
+        #Intercity => 70% local rail
+        if 'Intercity' in preferred_transportation:
+            proba=[70,30]
+            index =self.rule_random_index(proba)
+            if index == 0:
+                service.append('Local rail')
+        #Metro => 70% underground
+        if 'Metro' in preferred_transportation:
+            proba=[70,30]
+            index =self.rule_random_index(proba)
+            if index == 0:
+                service.append('Underground')
+        #ship => 70% water transport
+        if 'Ship' in preferred_transportation:
+            proba=[70,30]
+            index =self.rule_random_index(proba)
+            if index == 0:
+                service.append('Water transport')
+        #cable => 70% Telecabin
+        if 'Cable Way' in preferred_transportation:
+            proba=[70,30]
+            index =self.rule_random_index(proba)
+            if index == 0:
+                service.append('Telecabin')
+        #Funicular => 70% local type
+        if 'Funicular' in preferred_transportation:
+            proba=[70,30]
+            index =self.rule_random_index(proba)
+            if index == 0:
+                service.append('Local type')
+        #Bus => 70% Bus / DRT
+        if 'Bus' in preferred_transportation:
+            proba=[70,30]
+            index =self.rule_random_index(proba)
+            if index == 0:
+                num_of_services =random.randint(1,2)
+                service +=random.sample(['Bus','DRT'],num_of_services)
+
+        #60% people choose midcellaneous
+        proba =[10,90]
+        index =self.rule_random_index(proba)
+        if index ==0:
+            service.append('Miscellaneous')
+
+        if service == []:
+            service.append(random.choice(self.services))
+        # print(service)
+
+        #----------------------------------------------------
+        #transfers
+        # ["Unlimited","None","Max 1","Max 2","Max 3","Max 4"]
+        transfer = random.choice(self.transfers)
+
+        #prm
+        #Disabled people => 40% None 30% Max_1 20% Max_2 10% Other
+        if not PRM_type == []:
+            proba = [40,30,20,10]
+            index =self.rule_random_index(proba)
+            if index ==0:
+                transfer = 'None'
+            if index ==1:
+                transfer = "Max 1"
+            if index ==2 :
+                transfer = 'Max 2'
+            if index ==3:
+                transfer = random.choice(['Unlimited','Max 3','Max 4'])
+
+        # print(transfer)
+
+        #------------------------------------------------------
+        #walking distance (prm > purpose > age)
+        
+        #prm
+        #Disabled people => 80% short distance
+        if not PRM_type ==[]:
+            proba = [80,20]
+ 
+        #purpose
+        #Business => 90% short
+        elif profile_type =='Business':
+            proba = [90,10]
+
+        #age
+        # old people => 60% short
+        elif age >= 55 :
+            proba =[60,40]
+        
+        #Default Value
+        else:
+            proba =[50,50]
+
+        index =self.rule_random_index(proba)
+        if index ==0:
+            walking_distance_to_stop = str(random.randrange(500,2000,500))+'m'
+        if index ==1:
+            walking_distance_to_stop = str(random.randrange(2000,5000,500))+'m'
+
+        # print(walking_distance_to_stop)
+
+        #------------------------------------------------------
+        #transfer duration
+        # ["normal","At least 10 min","At least 15 min","At least 20 min",
+        #"At least 25 min","At least 30 min","At least 35 min",
+        #"At least 40 min","At least 45 min"]
+        #Default Value
+        transfer_duration = random.choice(self.transfer_durations)
+
+        #prm
+        #disabled people => more time
+        if not PRM_type ==[]:
+            proba = [40,30,20,10]
+ 
+        # purpose
+        #Business => less time
+        elif profile_type == 'Business':
+            proba = [5,10,20,65] 
+
+        #transfers
+        #more transfers => less time
+        elif transfer in ['Unlimited','Max 3','Max 4']:
+            proba = [10,20,30,40]
+
+        #walking distance
+        #far => more time
+        elif int(walking_distance_to_stop[:-1]) >= 2500 :
+            proba =[40,40,15,5]
+
+        else:
+            proba = [25,25,25,25]
+
+
+        index =self.rule_random_index(proba)
+        if index ==0:
+            transfer_duration = random.choice(["At least 40 min","At least 45 min"])
+        if index ==1:
+            transfer_duration = random.choice(["At least 30 min","At least 35 min"])
+        if index ==2 :
+            transfer_duration = random.choice(["At least 20 min","At least 25 min"])
+        if index ==3:
+            transfer_duration = random.choice(["normal","At least 10 min","At least 15 min"])             
+
+        # print(transfer_duration)
+
+        #-----------------------------------------------------
+        #walking speed(prm > purpose >age)
+        # ["Slow","Medium","Fast"]
+        walking_speed = random.choice(self.walking_speads)
+
+        #prm
+        #Disabled people => 80% slow 18% medium 2%fast
+        if not PRM_type ==[]:
+            proba = [80,18,2]
+ 
+        #purpose
+        #Business => 5% slow 15% medium 80% fast
+        elif profile_type =='Business':
+            proba = [5,15,80]
+
+        #age
+        # old people => 60% slow 20% medium 20% fast
+        elif age >= 55 :
+            proba =[60,20,20]
+        
+        #walking distance
+        #far => 60% fast
+        elif int(walking_distance_to_stop[:-1]) >= 2500:
+            proba = [10,30,60]
+        #normal dis. =>60% medium
+        elif int(walking_distance_to_stop[:-1]) >= 1000:
+            proba = [10,60,30]
+        #close =>60% slow
+        elif int(walking_distance_to_stop[:-1]) <= 1000:
+            proba = [60,30,10] 
+        
+        #Default Value
+        else:
+            proba =[33,34,33]
+
+        index =self.rule_random_index(proba)
+        if index ==0:
+            walking_speed = 'Slow'
+        if index ==1:
+            walking_speed = 'Medium'
+        if index ==2:
+            walking_speed = 'Fast'
+        # print(walking_speed)
+
+        #---------------------------------------------------
+        #cycling distance
+        cycling_distance_to_stop = str(random.randrange(2000,20000,500))+'m'
+        
+        #prm
+        #Disabled people => NO cycling
+        if not PRM_type ==[]:
+            cycling_distance_to_stop = ''
+
+        else:
+            #purpose
+            #Business => 90% short
+            if profile_type =='Business':
+                proba = [90,10]
+
+            #age
+            # old people => 60% short
+            elif age >= 55 :
+                proba =[60,40]
+
+            #Default Value
+            else:
+                proba =[50,50]
+
+            index =self.rule_random_index(proba)
+            if index ==0:
+                cycling_distance_to_stop = str(random.randrange(2000,10000,500))+'m'
+            if index ==1:
+                cycling_distance_to_stop = str(random.randrange(10000,20000,500))+'m'
+        # print(cycling_distance_to_stop)
+
+        #----------------------------------------------------
+        #cycling speed
+        cycling_speed = random.choice(self.cycling_speads)
+
+        #prm
+        #Disabled people => NO cycling
+        if not PRM_type ==[]:
+            cycling_speed = ''
+
+        else:
+            #purpose
+            #Business => 5% slow 15% medium 80% fast
+            if profile_type =='Business':
+                proba = [5,15,80]
+
+            #age
+            # old people => 60% slow 20% medium 20% fast
+            elif age >= 55 :
+                proba =[60,20,20]
+        
+            #cycling distance
+            #far => 60% fast
+            elif int(cycling_distance_to_stop[:-1]) >= 15000:
+                proba = [10,30,60]
+            #normal dis. =>60% medium
+            elif int(cycling_distance_to_stop[:-1]) >= 5000:
+                proba = [10,60,30]
+            #close =>60% slow
+            elif int(cycling_distance_to_stop[:-1]) <= 5000:
+                proba = [60,30,10] 
+        
+            #Default Value
+            else:
+                proba =[33,34,33]
+
+            index =self.rule_random_index(proba)
+            if index ==0:
+                cycling_speed = 'Slow'
+            if index ==1:
+                cycling_speed = 'Medium'
+            if index ==2:
+                cycling_speed = 'Fast'
+
+        # print(cycling_speed)
+
+        #-------------------------------------------------
+        #driving speed
+        driving_speed = random.choice(self.driving_speeds)
+
+        #prm
+        #disabled people => NO drive
+        if not PRM_type ==[]:
+            driving_speed=''
+
+        #age
+        #young and old => No drive
+        elif age <= 18 or age >=60 :
+            driving_speed =''
+
+        else:
+            
+            #purpose
+            #Business => 5% slow 15% medium 80% fast
+            if profile_type =='Business':
+                proba = [5,15,80]
+
+            #age
+            # [18,30] => 20% slow 20% medium 60% fast
+            elif age <=30 :
+                proba =[20,20,60] 
+            # [30,60] => 50% slow 30% medium 20% fast
+            elif age <60 :
+                proba = [50,30,20]
+
+            #default value
+            else:
+                proba =[33,34,33]
+
+            index =self.rule_random_index(proba)
+            if index ==0:
+                cycling_speed = 'Slow'
+            if index ==1:
+                cycling_speed = 'Medium'
+            if index ==2:
+                cycling_speed = 'Fast' 
+
+        # print(driving_speed)
+
+        #---------------------------------------------------------------
+        # print("\nRandom Trip Planner Information has been generated:\n")
+        OfferContext_dict = {"Legs Number":legs_num,"Profile":profile_type,
+                   "Starting point":start_point,"Destination":destination,
+                   "Departure time":departure_time,"Arrival time":arrival_time,
+                   "Via":str(via_stop),"Services":str(service),"Transfers":transfer,
+                   "Transfer duration":transfer_duration,
+                   "Walking distance to stop":walking_distance_to_stop,
+                   "Walking speed":walking_speed,
+                   "Cycling distance to stop":cycling_distance_to_stop,
+                   "Cycling speed":cycling_speed,
+                   "Driving speed":driving_speed}
+
+        # print(TP_dict)
+        return OfferContext_dict
+
+    def RULE_historical_Generator(self,username,staticChangeTag=True,staProfile=None):
+
+        dataframe_lists = []
+        unique_id = datetime.datetime.now().strftime('%Y%m%d%H%M%S')      
+        
+        userID = username
+        if staticChangeTag is True:
+            staticProfile = self.RULE_staticProfile_Generator()
+        else:
+            staticProfile = staProfile
+            if staProfile is None:return
+
+        TimeStamp = datetime.datetime.now()
+
+        TravelOffer = {"TimeStamp":TimeStamp}
+        TravelOffer.update({"User ID":userID })
+        TravelOffer.update(staticProfile)
+            
+        #change the number to generate different amount of his records
+        dynamic_num =random.randint(4,5)
+        for inx_d in range(dynamic_num):
+            dynamicProfile = self.RULE_dynamicProfile_Generator(staticProfile)
+            TravelOffer.update(dynamicProfile)
+
+            travel_num =random.randint(20,25)
+            for n in range(travel_num):
+                dataframe_list = []
+                travelOfferID = str(unique_id) + str(n)
+                # print(legs_num)
+
+                category = self.offer_Categorizer()
+                offerContext = self.RULE_offerContext_Generator(staticProfile,dynamicProfile)
+                legs_num = offerContext['Legs Number']
+                legInfo = self.leg_info_Generator(legs_num)
+
+                TravelOffer.update({"Travel Offer ID":travelOfferID})
+                TravelOffer.update(category)
+                TravelOffer.update(legInfo)
+                TravelOffer.update(offerContext)
+                TravelOffer.update({"Bought Tag":random.choice([0,1])})
+                # print(TravelOffer)
+
+                #Unique ID
+
+                dataframe_list.append(TravelOffer["Travel Offer ID"])
+                dataframe_list.append(TravelOffer["User ID"])
+                #static profile
+                dataframe_list.append(TravelOffer["TimeStamp"])
+                dataframe_list.append(TravelOffer['Date Of Birth'])
+                dataframe_list.append(TravelOffer['city'])
+                dataframe_list.append(TravelOffer['country'])
+                #==========================================
+                dataframe_list.append(TravelOffer["Loyalty Card"])
+                dataframe_list.append(TravelOffer["Payment Card"])
+                dataframe_list.append(TravelOffer["PRM Type"])
+                dataframe_list.append(TravelOffer["Preferred means of transportation"])
+                dataframe_list.append(TravelOffer["Preferred carrier"])
+                dataframe_list.append(TravelOffer["Class"])
+                dataframe_list.append(TravelOffer["Seat"])
+                dataframe_list.append(TravelOffer["Refund Type"])
+                #Category
+                dataframe_list.append(TravelOffer['Quick'])
+                dataframe_list.append(TravelOffer['Reliable'])
+                dataframe_list.append(TravelOffer['Cheap'])
+                dataframe_list.append(TravelOffer['Comfortable'])
+                dataframe_list.append(TravelOffer['Door-to-door'])
+                dataframe_list.append(TravelOffer['Environmentally friendly'])
+                dataframe_list.append(TravelOffer['Short'])
+                dataframe_list.append(TravelOffer['Multitasking'])
+                dataframe_list.append(TravelOffer['Social'])
+                dataframe_list.append(TravelOffer['Panoramic'])
+                dataframe_list.append(TravelOffer['Healthy'])
+                # dataframe_list.append(TravelOffer['Secure'])
+                # dataframe_list.append(TravelOffer['Safe'])
+                #legs_num
+                dataframe_list.append(TravelOffer['Legs Number'])
+                #profile
+                dataframe_list.append(TravelOffer['Profile'])
+                #Source-Des-Via
+                dataframe_list.append(TravelOffer['Starting point'])
+                dataframe_list.append(TravelOffer['Destination'])
+                dataframe_list.append(TravelOffer['Via'])
+                #legs_info
+                dataframe_list.append(TravelOffer['LegMode'])
+                dataframe_list.append(TravelOffer['LegCarrier'])
+                dataframe_list.append(TravelOffer['LegSeat'])
+                dataframe_list.append(TravelOffer['LegLength'])
+                #context
+                dataframe_list.append(TravelOffer["Departure time"])
+                dataframe_list.append(TravelOffer["Arrival time"])
+                dataframe_list.append(TravelOffer["Services"])
+                dataframe_list.append(TravelOffer["Transfers"])
+                dataframe_list.append(TravelOffer["Transfer duration"])
+                dataframe_list.append(TravelOffer["Walking distance to stop"])
+                dataframe_list.append(TravelOffer["Walking speed"])
+                dataframe_list.append(TravelOffer["Cycling distance to stop"])
+                dataframe_list.append(TravelOffer["Cycling speed"])
+                dataframe_list.append(TravelOffer["Driving speed"])
+
+                dataframe_list.append(TravelOffer['Bought Tag'])
+                # print(dataframe_list)
+                dataframe_lists.append(dataframe_list)
+        df = pd.DataFrame(data=dataframe_lists)
+        df.columns =["Travel Offer ID","User ID","TimeStamp",'Date Of Birth','city','country',
+                     "Loyalty Card","Payment Card","PRM Type","Preferred means of transportation",
+                     "Preferred carrier","Class","Seat","Refund Type",'Quick','Reliable','Cheap',
+                     'Comfortable','Door-to-door','Environmentally friendly','Short','Multitasking',
+                     'Social','Panoramic','Healthy','Legs Number','Profile','Starting point',
+                     'Destination','Via','LegMode','LegCarrier','LegSeat','LegLength',"Departure time",
+                     "Arrival time","Services","Transfers","Transfer duration","Walking distance to stop",
+                     "Walking speed","Cycling distance to stop","Cycling speed","Driving speed","Bought Tag"] 
+        
+        return df 
+
+
     def res2csv(self,df,file_path,filename):
         if not os.path.exists(file_path):
             os.mkdir(file_path)
         filename = file_path +'/'+filename 
         df.to_csv(filename,encoding='utf-8',mode='w',header=True,index=False)
 
-    def _GenerateHis2File(self,username):
-        df = self.historical_Generator(username)
+    def _GenerateHis2File(self,username,staticChangeTag=True,staProfile=None):
+        # df = self.historical_Generator(username,staticChangeTag=staticChangeTag,staProfile=staProfile)
+        df = self.RULE_historical_Generator(username,staticChangeTag=staticChangeTag,staProfile=staProfile)
         self.res2csv(df, self.TEST_HISTORICAL_DATA_PATH, username+'.csv')
         print('\n>>>\nUser {} `s historical records has been generated in the file \n{}\n'.format(username,self.TEST_HISTORICAL_DATA_PATH))
 
@@ -617,6 +1693,7 @@ class CLASSIFIER_LEANER:
         if recommender_category is None :
             recommender_category = self.recommender_categories
             
+        #TODO split dataset based on the label 
         if fit_data_tag == 'train':
             train_data = recommender_input_data['X_train']
             train_label = recommender_input_data['y_train']
@@ -677,7 +1754,7 @@ class CLASSIFIER_LEANER:
 
     def CHECK_ADMINISTRATOR2CLASSIFIER_TRAIN(self,username):
 
-        his._GenerateHis2File(username)
+        self.his._GenerateHis2File(username)
         self.API_CLASSIFIER_TRAIN(username)
 
 class FEEDBACK:
@@ -696,7 +1773,9 @@ class FEEDBACK:
             BoughtTag = [0]*displayNum
         df_rec['Bought Tag'] = BoughtTag
 
+
         boughtID_list = boughtInfo['Travel Offer ID'].values.tolist()
+        print(boughtID_list)
         for boughtID in boughtID_list:
             if  boughtID in df_rec['Travel Offer ID'].values.tolist():
                 df_rec.drop(index=(df_rec.loc[(df_rec['Travel Offer ID']==boughtID)].index),inplace=True)
@@ -846,6 +1925,7 @@ class CLUSTER_LEANER:
                     df_raw = pd.concat([df_raw,df_raw_tmp],axis=0)
             if len(df_raw) == 0:
                 print('please check your database, one cluster has no data')
+                # TODO:give a top popular travel offer list? problem will be solved when we have a big db.
                 return 
             self.his.res2csv(df_raw, self.his.TEST_HISTORICAL_DATA_PATH, tablename)
 
@@ -870,7 +1950,7 @@ class CLUSTER_LEANER:
     # def CHECK_ADMINISTRATOR2UPDATE
 
 # his = TEST_HistoricalDataGenerate()
-# his.GenerateHis2File('TESTUSER1')
+# his._GenerateHis2File('COLDUSER1')
 # print(his.TEST_HISTORICAL_DATA_PATH)
 
 # c = CLASSIFIER_LEANER()
@@ -881,3 +1961,8 @@ class CLUSTER_LEANER:
 # clu = CLUSTER_LEANER()
 # clu.CHECK_ADMINISTRATOR2CLUSTER_TRAIN()
 
+# fdb = FEEDBACK()
+# bought = [2021051201545715]
+# res ='20210512_01545786'
+# boughtInfo = fdb.get_boughtInfo('OLDUSER1',bought,res)
+# fdb.API_UpdateRecords('OLDUSER1',boughtInfo,res)
