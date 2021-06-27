@@ -97,7 +97,7 @@ class ParametersTunning:
             hyperparameters_range_dictionary['max_depth'] = Integer(1,5)
             hyperparameters_range_dictionary['criterion'] = Categorical(['gini','entropy'])
             hyperparameters_range_dictionary['max_features'] = Integer(1,40)
-            hyperparameters_range_dictionary['max_leaf_nodes'] = Integer(1,20)
+            hyperparameters_range_dictionary['max_leaf_nodes'] = Integer(2,20)
             hyperparameters_range_dictionary['min_samples_leaf'] = Integer(1,20)
 
         if recommender_name is 'LogisticRegression':
@@ -196,8 +196,11 @@ class ParametersTunning:
             print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n')
             print('Current Checking Recommender is >>>> [[ {} ]] \n'.format(recommender))
             hyperparameters_range_dictionary = self.parametersRangeDefine(recommender)
-            model_tmp,timecosuming = self.fit_Model(recommender,train_data,train_label,hyperparameters_range_dictionary)
+            model_tmp,timeconsuming = self.fit_Model(recommender,train_data,train_label,hyperparameters_range_dictionary)
             best_parameter_tmp,best_score_tmp,best_estimator_tmp = self.get_best_parameter(model_tmp)
+            #ACC_EVAL_INFO
+            acc_eval_info_tmp ={'AccScore':best_score_tmp,'Timeconsuming':timeconsuming,'EstimatorParam':best_estimator_tmp}
+            best_model_info.update({recommender:acc_eval_info_tmp})
 
             evaluation_score = 0
             if evaluation_data is not None or evaluation_label is not None:
@@ -209,11 +212,11 @@ class ParametersTunning:
                 best_parameter = best_parameter_tmp
                 best_score = best_score_tmp
                 best_recommender = recommender
-                best_timeconsuming = timecosuming
+                best_timeconsuming = timeconsuming
                 best_evaluation_score = evaluation_score
 
             print('\n')
-        best_model_info = {'best_estimator':best_estimator,'best_tune_parameter':best_parameter,'best_score':best_score,'best_recommender':best_recommender,'best_timeconsuming':best_timeconsuming,'best_evaluation_score':best_evaluation_score}
+        best_model_info.update({'best_estimator':best_estimator,'best_tune_parameter':best_parameter,'best_score':best_score,'best_recommender':best_recommender,'best_timeconsuming':best_timeconsuming,'best_evaluation_score':best_evaluation_score})
         print('----------------------------------------------------------------------------------------------------------------\n')
         print("SEARCHING FINISH :\n The best recommder is {} \n its tune parameter is {} \n its score is {}\n its evaluation score is {} (0 means do not have the evaluation set)\n its model train time is {}\n The actually estimator is {}\n".format(best_recommender,best_parameter,best_score,best_evaluation_score,best_timeconsuming,best_estimator))
         print('----------------------------------------------------------------------------------------------------------------\n') 
