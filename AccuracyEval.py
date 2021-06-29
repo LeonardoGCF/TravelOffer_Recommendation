@@ -1,4 +1,5 @@
 import os
+from numpy.lib.function_base import average
 import pandas as pd
 from numpy.lib.utils import info
 from LEARNER import TEST_HistoricalDataGenerate
@@ -43,9 +44,11 @@ class ACC_EVAL:
             if info_tmp['KNeighborsClassifier_uniform']['AccScore'] >= info_tmp['KNeighborsClassifier_distance']['AccScore']:
                 evalDict.update({'KNN_Acc':info_tmp['KNeighborsClassifier_uniform']['AccScore'],
                 'KNN_timeconsuming':info_tmp['KNeighborsClassifier_uniform']['Timeconsuming']})
+                knn_trainingtime = info_tmp['KNeighborsClassifier_uniform']['Timeconsuming'] 
             elif info_tmp['KNeighborsClassifier_uniform']['AccScore'] < info_tmp['KNeighborsClassifier_distance']['AccScore']:
                 evalDict.update({'KNN_Acc':info_tmp['KNeighborsClassifier_distance']['AccScore'],
-                'KNN_timeconsuming':info_tmp['KNeighborsClassifier_distance']['Timeconsuming']})   
+                'KNN_timeconsuming':info_tmp['KNeighborsClassifier_distance']['Timeconsuming']}) 
+                knn_trainingtime = info_tmp['KNeighborsClassifier_distance']['Timeconsuming']  
 
             evalDict.update({
                 'SVC_Acc':info_tmp['SVC']['AccScore'],
@@ -61,6 +64,9 @@ class ACC_EVAL:
                 'BEST_MODEL_timeconsuming':info_tmp['best_timeconsuming']
             })
 
+            total_trainingtime = knn_trainingtime + info_tmp['SVC']['Timeconsuming'] + info_tmp['DecisionTreeClassifier']['Timeconsuming']+ info_tmp['LogisticRegression']['AccScore'] + info_tmp['RandomForestClassifier']['Timeconsuming']
+            evalDict.update({'Total_trainingtime':total_trainingtime})
+
             dataframe_list.append(evalDict['username'])
             dataframe_list.append(evalDict["KNN_Acc"])
             dataframe_list.append(evalDict["KNN_timeconsuming"])
@@ -75,24 +81,26 @@ class ACC_EVAL:
             dataframe_list.append(evalDict["BEST_MODEL"])
             dataframe_list.append(evalDict["BEST_Acc"])
             dataframe_list.append(evalDict["BEST_MODEL_timeconsuming"])
+            dataframe_list.append(evalDict['Total_trainingtime'])
 
             dataframe_lists.append(dataframe_list)
 
         df = pd.DataFrame(data=dataframe_lists)
         df.columns =['username',
                     "KNN_Acc",
-                    "KNN_timeconsuming",
+                    "KNN_trainingtime",
                     "SVC_Acc",
-                    "SVC_timeconsuming",   
+                    "SVC_trainingtime",   
                     "DecisionTree_Acc",
-                    "DecisionTree_timeconsuming",
+                    "DecisionTree_trainingtime",
                     "LogisticRegression_Acc",
-                    "LogisticRegression_timeconsuming",
+                    "LogisticRegression_trainingtime",
                     "RandomForest_Acc",
-                    "RandomForest_timeconsuming",
+                    "RandomForest_trainingtime",
                     "BEST_MODEL",
                     "BEST_Acc",
-                    "BEST_MODEL_timeconsuming"]
+                    "BEST_MODEL_trainingtime",
+                    'Total_trainingtime']
         
         return df
 
@@ -116,32 +124,84 @@ class ACC_EVAL:
         if filepath == None:
             filepath=self.his.EVAL_ACC_RESULT_PATH
         res_Full = pd.read_csv(filepath+'/'+filename)
-        res_Acc = res_Full[['KNN_Acc','SVC_Acc','DecisionTree_Acc','LogisticRegression_Acc','RandomForest_Acc','BEST_Acc']]
-        print(res_Acc)
 
+        #Separate Box plot
+        res_Acc = res_Full[['KNN_Acc','SVC_Acc','DecisionTree_Acc','LogisticRegression_Acc','RandomForest_Acc']]#,'BEST_Acc']]
+        # print(res_Acc)
         data_Box = res_Acc.values
-        labels=['KNN_Acc','SVC_Acc','DecisionTree_Acc','LogisticRegression_Acc','RandomForest_Acc','BEST_Acc']
+        labels=['KNN_Acc','SVC_Acc','DecisionTree_Acc','LogisticRegression_Acc','RandomForest_Acc'] #,'BEST_Acc']
 
         plt.boxplot(data_Box,labels=labels)
-        plt.title('Accuracy Boxplot for User "AccTestUser_0"-"AccTestUser_999"')
+        plt.title('Accuracy Boxplot of Different Algorithms for User "AccTestUser_0"-"AccTestUser_999"')
         plt.show()
 
-    
+        #Whole Box plot
+        best_Acc = res_Full[['BEST_Acc']]
+        # print(res_Acc)
+        best_Box = best_Acc.values
+        best_labels=['BEST_Acc']
 
+        plt.boxplot(best_Box,labels=best_labels)
+        plt.title('Accuracy Boxplot of the Best Model for User "AccTestUser_0"-"AccTestUser_999"')
+        plt.show()
+
+        #Pie Chart
+        pie_arr = res_Full['BEST_MODEL']
+        print(pie_arr)
+        pie_values =[0]*5
+        for n in range(len(pie_arr)):
+            if pie_arr[n] == 'KNeighborsClassifier_uniform' or pie_arr[n]=='KNeighborsClassifier_distance':
+                pie_values[0] += 1
+            elif pie_arr[n] == 'SVC':
+                pie_values[1] +=1
+            elif pie_arr[n] == 'DecisionTreeClassifier':
+                pie_values[2] +=1
+            elif pie_arr[n] == 'LogisticRegression':
+                pie_values[3] +=1
+            elif pie_arr[n] == 'RandomForestClassifier':
+                pie_values[4] +=1
+        
+        pie_values = [x/len(pie_arr) for x in pie_values]
+        pie_labels =['KNN','SVC','Decision Tree','Logistic Regression','Random Forest']
+        plt.pie(x=pie_values,labels=pie_labels,autopct='%1.2f%%')
+        plt.title('The probability of different algorithms that are used to generate the best model.')
+        plt.show()
+
+        #Training time
+        #Separate Box plot
+        res_Time = res_Full[['KNN_trainingtime','SVC_trainingtime','DecisionTree_trainingtime','LogisticRegression_trainingtime','RandomForest_trainingtime']]#,'BEST_trainingtime']]
+        # print(res_Acc)
+        time_Box = res_Time.values
+        time_labels=['KNN_trainingtime','SVC_trainingtime','DecisionTree_trainingtime','LogisticRegression_trainingtime','RandomForest_trainingtime'] #,'BEST_trainingtime']
+
+        plt.boxplot(time_Box,labels=time_labels)
+        plt.title('Training time Boxplot of Different Algorithms for User "AccTestUser_0"-"AccTestUser_999"')
+        plt.show() 
+
+        #Whole Box plot
+        total_Time = res_Full['Total_trainingtime']
+        # print(res_Acc)
+        totaltime_Box = total_Time
+        totaltime_labels=['Total Training Time']
+
+        plt.boxplot(totaltime_Box,labels=totaltime_labels)
+        plt.title('Total Training Time Boxplot for User "AccTestUser_0"-"AccTestUser_999"')
+        plt.show()
 
 main =ACC_EVAL()
 dataName ='AccTestUser'
 count = 1000
 # main.generate_Eval_Dataset(dataName,count)
 
-# info = main.collect_Accuracy_info(dataName +'_94')
+# info = main.collect_Accuracy_info(dataName +'_0')
 # print(info['SVC'])
 # print(info['SVC']['AccScore'])
 
 # df = main.evaluation_results(dataName,count)
 # print(df)
 
-# main._run(reGenerateDataTag=False,reTrainTag=False)
+# main._run(reGenerateDataTag=False,reTrainTag=True)
+# main._run()
 
 # for n in range(94,1000):
 #     main.collect_Accuracy_info(dataName +'_'+str(n))
