@@ -1,6 +1,7 @@
 import datetime
 import random
 import os
+from matplotlib import use
 import pandas as pd
 
 from Step1_user2TSP import USER2TSP
@@ -388,7 +389,8 @@ class TravelOffer_RS:
         staProfile = {"Date Of Birth":df_profile['Date Of Birth'][0],"city":df_profile['city'][0],"country":df_profile['country'][0]}
         self.his._GenerateHis2File(username,staticChangeTag=False,staProfile=staProfile)
 
-        
+    def Build_UserHistoricalRecords(self,username):
+        self.his._GenerateHis2File(username) 
         
 
 # main = TravelOffer_RS()

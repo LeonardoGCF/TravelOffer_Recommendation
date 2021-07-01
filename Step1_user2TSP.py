@@ -111,7 +111,7 @@ class USER2TSP:
         requestInfo = self.readJsonfile(Jsonfile=Jsonfile)
         df_tsp = self.TSP(requestInfo)
         self.his.res2csv(df_tsp, self.CHECK_USER2TSP_PATH, 'TSPresults.csv')
-        print('>>>\nTSP PHASE has been checked over, see the results in :\n',self.CHECK_USER2TSP_PATH+'TSPresults.csv')
+        print('>>>\nTSP PHASE has been checked over, see the results in :\n',self.CHECK_USER2TSP_PATH+'/TSPresults.csv')
 
 
 

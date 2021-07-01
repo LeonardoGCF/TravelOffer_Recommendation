@@ -12,6 +12,11 @@ from one_hot_encoding import OfferOneHotEncoder
 from ParametersTunning import ParametersTunning
 from Cluster import CLUSTER
 
+import matplotlib 
+matplotlib.use('TkAgg')
+import matplotlib.pyplot as plt
+import seaborn as sns
+
 
 
 class TEST_HistoricalDataGenerate:
@@ -1109,7 +1114,7 @@ class TEST_HistoricalDataGenerate:
                 num_of_services =random.randint(1,2)
                 service +=random.sample(['Bus','DRT'],num_of_services)
 
-        #60% people choose midcellaneous
+        #10% people choose midcellaneous
         proba =[10,90]
         index =self.rule_random_index(proba)
         if index ==0:
@@ -1265,7 +1270,7 @@ class TEST_HistoricalDataGenerate:
         #prm
         #Disabled people => NO cycling
         if not PRM_type ==[]:
-            cycling_distance_to_stop = ''
+            cycling_distance_to_stop = '0m'
 
         else:
             #purpose
@@ -1296,7 +1301,7 @@ class TEST_HistoricalDataGenerate:
         #prm
         #Disabled people => NO cycling
         if not PRM_type ==[]:
-            cycling_speed = ''
+            cycling_speed = '0'
 
         else:
             #purpose
@@ -1341,12 +1346,12 @@ class TEST_HistoricalDataGenerate:
         #prm
         #disabled people => NO drive
         if not PRM_type ==[]:
-            driving_speed=''
+            driving_speed='0'
 
         #age
         #young and old => No drive
         elif age <= 18 or age >=60 :
-            driving_speed =''
+            driving_speed ='0'
 
         else:
             
